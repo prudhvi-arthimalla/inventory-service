@@ -1,5 +1,6 @@
 package com.minimart.inventory.api.dto
 
+import com.minimart.inventory.api.examples.ResponseExamples
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
@@ -8,14 +9,7 @@ import jakarta.validation.constraints.NotBlank
 
 @Schema(
   description = "Request for adding or updating product stock inventory",
-  example =
-    """
-        {
-            "productId": "PROD-001",
-            "quantity": 50,
-            "mode": "UPSERT"
-        }
-    """
+  example = ResponseExamples.ADD_OR_UPDATE_STOCK_RESPONSE
 )
 data class AddOrUpdateStockRequest(
   @field:NotBlank(message = "Product Id cannot be blank")

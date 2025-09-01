@@ -1,21 +1,12 @@
 package com.minimart.inventory.api.dto
 
-import com.minimart.inventory.infra.persistence.StockDocument
+import com.minimart.inventory.api.examples.RequestExamples
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.Instant
 
 @Schema(
   description = "Response containing the current stock levels after an add/update operation",
-  example =
-    """
-        {
-            "productId": "PROD-001",
-            "onHand": 150,
-            "reserved": 25,
-            "available": 125,
-            "lastUpdated": "2025-01-15T10:30:00Z"
-        }
-    """
+  example = RequestExamples.ADD_OR_UPDATE_STOCK_REQUEST
 )
 data class AddOrUpdateStockResponse(
   @field:Schema(description = "Unique identifier of the product") val productId: String,
@@ -47,12 +38,3 @@ data class AddOrUpdateStockResponse(
   )
   val lastUpdated: Instant
 )
-
-fun toResponse(doc: StockDocument) =
-  AddOrUpdateStockResponse(
-    productId = doc.sku,
-    onHand = doc.onHand,
-    reserved = doc.reserved,
-    available = doc.onHand - doc.reserved,
-    lastUpdated = doc.updatedAt ?: Instant.now()
-  )
