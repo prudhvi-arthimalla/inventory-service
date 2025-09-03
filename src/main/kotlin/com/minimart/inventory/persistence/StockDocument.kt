@@ -1,4 +1,4 @@
-package com.minimart.inventory.infra.persistence
+package com.minimart.inventory.persistence
 
 import java.time.Instant
 import org.springframework.data.annotation.CreatedDate

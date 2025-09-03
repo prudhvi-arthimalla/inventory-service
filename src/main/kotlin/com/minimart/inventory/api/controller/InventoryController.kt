@@ -3,9 +3,11 @@ package com.minimart.inventory.api.controller
 import com.minimart.inventory.api.dto.AddOrUpdateStockRequest
 import com.minimart.inventory.api.dto.AddOrUpdateStockResponse
 import com.minimart.inventory.api.examples.RequestExamples
+import com.minimart.inventory.api.examples.ResponseExamples
 import com.minimart.inventory.domain.service.InventoryService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -20,7 +22,18 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/api/v1/stock")
-class InventoryController(val inventoryService: InventoryService) {
+@ApiResponse(
+  responseCode = "400",
+  description = "Invalid request",
+  content =
+    [
+      Content(
+        mediaType = MediaType.APPLICATION_JSON_VALUE,
+        schema = Schema(implementation = Error::class)
+      )
+    ]
+)
+class InventoryController(private val inventoryService: InventoryService) {
 
   @PostMapping(
     consumes = [MediaType.APPLICATION_JSON_VALUE],
@@ -37,17 +50,25 @@ class InventoryController(val inventoryService: InventoryService) {
         ApiResponse(
           responseCode = "200",
           description = "Successfully add or update the stock",
-          content = [Content(schema = Schema(implementation = AddOrUpdateStockResponse::class))]
+          content =
+            [
+              Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = Schema(implementation = AddOrUpdateStockResponse::class),
+                examples = [ExampleObject(ResponseExamples.ADD_OR_UPDATE_STOCK_RESPONSE)]
+              )
+            ]
         ),
         ApiResponse(
           responseCode = "410",
           description = "Quantity can not be below reserved",
-          content = [Content(schema = Schema(implementation = Error::class))]
-        ),
-        ApiResponse(
-          responseCode = "400",
-          description = "Invalid request",
-          content = [Content(schema = Schema(implementation = Error::class))]
+          content =
+            [
+              Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = Schema(implementation = Error::class)
+              )
+            ]
         )
       ]
   )
@@ -55,7 +76,14 @@ class InventoryController(val inventoryService: InventoryService) {
     @RequestBody(
       description = "Payload to add or update stock",
       required = true,
-      content = [Content(schema = Schema(implementation = AddOrUpdateStockRequest::class))]
+      content =
+        [
+          Content(
+            mediaType = MediaType.APPLICATION_JSON_VALUE,
+            schema = Schema(implementation = AddOrUpdateStockRequest::class),
+            examples = [ExampleObject(RequestExamples.ADD_OR_UPDATE_STOCK_REQUEST)]
+          )
+        ]
     )
     @org.springframework.web.bind.annotation.RequestBody
     @Valid

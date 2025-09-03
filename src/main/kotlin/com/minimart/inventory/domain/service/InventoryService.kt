@@ -2,10 +2,11 @@ package com.minimart.inventory.domain.service
 
 import com.minimart.inventory.api.dto.AddOrUpdateStockRequest
 import com.minimart.inventory.api.dto.AddOrUpdateStockResponse
+import com.minimart.inventory.api.dto.ReserveStockRequest
 import com.minimart.inventory.api.dto.StockRequestMode
 import com.minimart.inventory.api.mapper.InventoryMapper
-import com.minimart.inventory.infra.persistence.StockDocument
-import com.minimart.inventory.infra.persistence.StockRepository
+import com.minimart.inventory.persistence.StockDocument
+import com.minimart.inventory.persistence.StockRepository
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Mono
@@ -63,7 +64,7 @@ class InventoryService(val stockRepository: StockRepository) {
       }
       // Retry mechanism for handling concurrent updates
       // If two requests try to update the same stock simultaneously,
-      // OptimisticLockingFailureException will be thrown and we retry up to 3 times
+      // OptimisticLockingFailureException will be thrown, and we retry up to 3 times
       .retryWhen(
         reactor.util.retry.Retry.max(3).filter {
           it is org.springframework.dao.OptimisticLockingFailureException
@@ -71,4 +72,6 @@ class InventoryService(val stockRepository: StockRepository) {
       )
       .map(InventoryMapper::toAddOrUpdateStockResponse)
   }
+
+  fun reserveStock(reserveStockRequest: ReserveStockRequest) {}
 }

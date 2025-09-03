@@ -1,4 +1,4 @@
-package com.minimart.inventory.infra.persistence
+package com.minimart.inventory.persistence
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Mono

@@ -1,7 +1,7 @@
 package com.minimart.inventory.api.mapper
 
 import com.minimart.inventory.api.dto.AddOrUpdateStockResponse
-import com.minimart.inventory.infra.persistence.StockDocument
+import com.minimart.inventory.persistence.StockDocument
 import java.time.Instant
 
 object InventoryMapper {
