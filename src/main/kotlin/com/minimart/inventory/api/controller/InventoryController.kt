@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping("/api/v1/stock")
+@RequestMapping(value = ["/api/v1/stock"])
 @ApiResponse(
   responseCode = "400",
   description = "Invalid request",
@@ -43,7 +43,7 @@ class InventoryController(private val inventoryService: InventoryService) {
   @Operation(
     summary = "Add or update stock for a given SKU",
     description =
-      "Add or update stock either absolutely (UPSERT) or relatively (INCREMENT)" +
+      "Add or update stock either absolutely (UPSERT) or relatively (INCREMENT) " +
         "Return 200 with Response body",
     responses =
       [

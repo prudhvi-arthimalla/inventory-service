@@ -8,9 +8,11 @@ import com.minimart.inventory.api.mapper.InventoryMapper
 import com.minimart.inventory.persistence.StockDocument
 import com.minimart.inventory.persistence.StockRepository
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Mono
 
+@Service
 class InventoryService(val stockRepository: StockRepository) {
   /**
    * Adds or updates stock for a given SKU with validation to ensure stock levels remain consistent.

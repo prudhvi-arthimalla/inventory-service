@@ -5,8 +5,10 @@ object ResponseExamples {
     """
         {
             "productId": "SKU-123",
-            "quantity": 50,
-            "mode": "UPSERT"
+            "onHand": 150,
+            "reserved": 25,
+            "available": 125,
+            "lastUpdated": "2025-01-15T10:30:00Z"
         }
     """
   const val RESERVE_STOCK_RESPONSE =
