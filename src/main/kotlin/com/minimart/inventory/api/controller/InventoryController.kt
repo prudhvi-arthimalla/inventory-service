@@ -60,7 +60,7 @@ class InventoryController(private val inventoryService: InventoryService) {
             ]
         ),
         ApiResponse(
-          responseCode = "410",
+          responseCode = "409",
           description = "Quantity can not be below reserved",
           content =
             [
