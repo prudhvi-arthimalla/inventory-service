@@ -1,10 +1,8 @@
 package com.minimart.inventory
 
-import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.fromApplication
+import org.springframework.boot.with
 
-@SpringBootTest
-class InventoryServiceApplicationTests {
-
-  @Test fun contextLoads() {}
+fun main(args: Array<String>) {
+    fromApplication<InventoryServiceApplication>().with(TestcontainersConfiguration::class).run(*args)
 }

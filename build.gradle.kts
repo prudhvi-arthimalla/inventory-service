@@ -47,7 +47,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.18.0")
 
     // API Docs
-    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0") // fixes CVE-2025-48924
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0")
 
     // Dev tools
     developmentOnly("org.springframework.boot:spring-boot-devtools")

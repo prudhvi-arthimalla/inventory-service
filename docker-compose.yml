@@ -1,11 +1,11 @@
 services:
-  mongo:
+  mongo-inventory:
     image: mongo:7
-    container_name: mongo-local
+    container_name: mongo-inventory
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
-      - mongo_data:/data/db
+      - mongo_inventory_data:/data/db
     healthcheck:
       test: ["CMD-SHELL", "mongosh --quiet --eval \"db.adminCommand({ ping: 1 }).ok\" | grep 1"]
       interval: 10s
@@ -21,11 +21,11 @@ services:
       - "8082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: local
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/inventorydb
+      SPRING_DATA_MONGODB_URI: mongodb://mongo-inventory:27017/inventorydb
     depends_on:
-      mongo:
+      mongo-inventory:
         condition: service_healthy
     restart: unless-stopped
 
 volumes:
-  mongo_data:
+  mongo_inventory_data:
