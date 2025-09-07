@@ -10,13 +10,12 @@ data class StockItem(val sku: String, val requestedQty: Long, val reserved: Bool
 
 @Repository
 class StockRepositoryService(private val mongoTemplate: ReactiveMongoTemplate) {
-  fun reserveStock(sku: String, quantity: Long) {
-    val expression =
-      MongoExpression.create(
-        "\$expr: {\$gte: [{\$subtract: ['\$onHand', '\$reserved']}, $quantity]}"
-      )
-    val criteria =
-      Criteria().andOperator(Criteria.where("sku").`is`(sku), Criteria.expr(expression))
-    val query = Query.query(criteria)
-  }
+    fun reserveStock(sku: String, quantity: Long) {
+        val expression =
+            MongoExpression.create(
+                "\$expr: {\$gte: [{\$subtract: ['\$onHand', '\$reserved']}, $quantity]}")
+        val criteria =
+            Criteria().andOperator(Criteria.where("sku").`is`(sku), Criteria.expr(expression))
+        val query = Query.query(criteria)
+    }
 }

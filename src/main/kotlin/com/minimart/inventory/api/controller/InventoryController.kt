@@ -23,72 +23,60 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping(value = ["/api/v1/stock"])
 @ApiResponse(
-  responseCode = "400",
-  description = "Invalid request",
-  content =
-    [
-      Content(
-        mediaType = MediaType.APPLICATION_JSON_VALUE,
-        schema = Schema(implementation = Error::class)
-      )
-    ]
-)
+    responseCode = "400",
+    description = "Invalid request",
+    content =
+        [
+            Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = Schema(implementation = Error::class))])
 class InventoryController(private val inventoryService: InventoryService) {
 
-  @PostMapping(
-    consumes = [MediaType.APPLICATION_JSON_VALUE],
-    produces = [MediaType.APPLICATION_JSON_VALUE]
-  )
-  @ResponseStatus(HttpStatus.OK)
-  @Operation(
-    summary = "Add or update stock for a given SKU",
-    description =
-      "Add or update stock either absolutely (UPSERT) or relatively (INCREMENT) " +
-        "Return 200 with Response body",
-    responses =
-      [
-        ApiResponse(
-          responseCode = "200",
-          description = "Successfully add or update the stock",
-          content =
+    @PostMapping(
+        consumes = [MediaType.APPLICATION_JSON_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(
+        summary = "Add or update stock for a given SKU",
+        description =
+            "Add or update stock either absolutely (UPSERT) or relatively (INCREMENT) " +
+                "Return 200 with Response body",
+        responses =
             [
-              Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = Schema(implementation = AddOrUpdateStockResponse::class),
-                examples = [ExampleObject(ResponseExamples.ADD_OR_UPDATE_STOCK_RESPONSE)]
-              )
-            ]
-        ),
-        ApiResponse(
-          responseCode = "409",
-          description = "Quantity can not be below reserved",
-          content =
-            [
-              Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = Schema(implementation = Error::class)
-              )
-            ]
-        )
-      ]
-  )
-  fun addOrUpdateStock(
-    @RequestBody(
-      description = "Payload to add or update stock",
-      required = true,
-      content =
-        [
-          Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = Schema(implementation = AddOrUpdateStockRequest::class),
-            examples = [ExampleObject(RequestExamples.ADD_OR_UPDATE_STOCK_REQUEST)]
-          )
-        ]
-    )
-    @org.springframework.web.bind.annotation.RequestBody
-    @Valid
-    addOrUpdateStockRequest: AddOrUpdateStockRequest
-  ): Mono<AddOrUpdateStockResponse> {
-    return inventoryService.addOrUpdateStock(addOrUpdateStockRequest)
-  }
+                ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully add or update the stock",
+                    content =
+                        [
+                            Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = Schema(implementation = AddOrUpdateStockResponse::class),
+                                examples =
+                                    [
+                                        ExampleObject(
+                                            ResponseExamples.ADD_OR_UPDATE_STOCK_RESPONSE)])]),
+                ApiResponse(
+                    responseCode = "409",
+                    description = "Quantity can not be below reserved",
+                    content =
+                        [
+                            Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = Schema(implementation = Error::class))])])
+    fun addOrUpdateStock(
+        @RequestBody(
+            description = "Payload to add or update stock",
+            required = true,
+            content =
+                [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = AddOrUpdateStockRequest::class),
+                        examples = [ExampleObject(RequestExamples.ADD_OR_UPDATE_STOCK_REQUEST)])])
+        @org.springframework.web.bind.annotation.RequestBody
+        @Valid
+        addOrUpdateStockRequest: AddOrUpdateStockRequest
+    ): Mono<AddOrUpdateStockResponse> {
+        return inventoryService.addOrUpdateStock(addOrUpdateStockRequest)
+    }
 }
