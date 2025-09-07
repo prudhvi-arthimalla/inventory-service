@@ -76,7 +76,7 @@ kotlin {
 
 spotless {
     kotlin {
-        ktfmt().googleStyle()
+        ktfmt().dropboxStyle()
         target("src/**/*.kt", "src/**/*.kts")
     }
 }

@@ -24,98 +24,99 @@ import reactor.test.StepVerifier
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
 @ContextConfiguration(
-    classes = [InventoryServiceApplication::class, TestcontainersConfiguration::class]
-)
+    classes = [InventoryServiceApplication::class, TestcontainersConfiguration::class])
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class InventoryServiceIntegrationTests {
-  @LocalServerPort private var port: Int = 0
+    @LocalServerPort private var port: Int = 0
 
-  @Autowired lateinit var webTestClient: WebTestClient
+    @Autowired lateinit var webTestClient: WebTestClient
 
-  @Autowired lateinit var stockRepository: StockRepository // your reactive Mongo repository
+    @Autowired lateinit var stockRepository: StockRepository // your reactive Mongo repository
 
-  val uri = "http://localhost:$port/api/v1/stock"
+    val uri = "http://localhost:$port/api/v1/stock"
 
-  @BeforeEach
-  fun setUp() {
-    stockRepository.deleteAll().block()
-  }
-
-  @Test
-  fun `addOrUpdateStock updates stock and returns 200 with response`() {
-    // given
-    val request =
-        AddOrUpdateStockRequest(skuCode = "sku-123", quantity = 10, mode = StockRequestMode.UPSERT)
-
-    // when & then
-    webTestClient
-        .post()
-        .uri(uri)
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(request)
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody(AddOrUpdateStockResponse::class.java)
-        .consumeWith { result ->
-          val response = result.responseBody!!
-          assertEquals(request.skuCode, response.sku)
-          assertEquals(request.quantity, response.onHand)
-        }
-
-    // verify database
-    StepVerifier.create(stockRepository.findBySku(request.skuCode)).assertNext { document ->
-      assertEquals(document.sku, request.skuCode)
-      assertEquals(document.onHand, request.quantity)
+    @BeforeEach
+    fun setUp() {
+        stockRepository.deleteAll().block()
     }
-  }
 
-  @Test
-  fun `addOrUpdateStock with INCREMENT mode adds to existing stock and returns 200 with response`() {
-    // given
-    val document = StockDocument(sku = "sku-123", onHand = 10, reserved = 2)
-    stockRepository.save(document).block()
+    @Test
+    fun `addOrUpdateStock updates stock and returns 200 with response`() {
+        // given
+        val request =
+            AddOrUpdateStockRequest(
+                skuCode = "sku-123", quantity = 10, mode = StockRequestMode.UPSERT)
 
-    val request =
-        AddOrUpdateStockRequest(
-            skuCode = "sku-123",
-            quantity = 8,
-            mode = StockRequestMode.INCREMENT,
-        )
+        // when & then
+        webTestClient
+            .post()
+            .uri(uri)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(request)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody(AddOrUpdateStockResponse::class.java)
+            .consumeWith { result ->
+                val response = result.responseBody!!
+                assertEquals(request.skuCode, response.sku)
+                assertEquals(request.quantity, response.onHand)
+            }
 
-    // when & then
-    webTestClient
-        .post()
-        .uri(uri)
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(request)
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody(AddOrUpdateStockResponse::class.java)
-        .consumeWith { result ->
-          val response = result.responseBody!!
-          assertEquals(request.skuCode, response.sku)
-          assertEquals(18, response.onHand)
+        // verify database
+        StepVerifier.create(stockRepository.findBySku(request.skuCode)).assertNext { document ->
+            assertEquals(document.sku, request.skuCode)
+            assertEquals(document.onHand, request.quantity)
         }
-  }
+    }
 
-  @Test
-  fun `addOrUpdateStock returns 409 when quantity is less than reserved`() {
-    val document = StockDocument(sku = "sku-123", onHand = 10, reserved = 5)
-    stockRepository.save(document).block()
+    @Test
+    fun `addOrUpdateStock with INCREMENT mode adds to existing stock and returns 200 with response`() {
+        // given
+        val document = StockDocument(sku = "sku-123", onHand = 10, reserved = 2)
+        stockRepository.save(document).block()
 
-    val request =
-        AddOrUpdateStockRequest(skuCode = "sku-123", quantity = 3, mode = StockRequestMode.UPSERT)
+        val request =
+            AddOrUpdateStockRequest(
+                skuCode = "sku-123",
+                quantity = 8,
+                mode = StockRequestMode.INCREMENT,
+            )
 
-    // when & then
-    webTestClient
-        .post()
-        .uri(uri)
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(request)
-        .exchange()
-        .expectStatus()
-        .isEqualTo(HttpStatus.CONFLICT)
-  }
+        // when & then
+        webTestClient
+            .post()
+            .uri(uri)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(request)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody(AddOrUpdateStockResponse::class.java)
+            .consumeWith { result ->
+                val response = result.responseBody!!
+                assertEquals(request.skuCode, response.sku)
+                assertEquals(18, response.onHand)
+            }
+    }
+
+    @Test
+    fun `addOrUpdateStock returns 409 when quantity is less than reserved`() {
+        val document = StockDocument(sku = "sku-123", onHand = 10, reserved = 5)
+        stockRepository.save(document).block()
+
+        val request =
+            AddOrUpdateStockRequest(
+                skuCode = "sku-123", quantity = 3, mode = StockRequestMode.UPSERT)
+
+        // when & then
+        webTestClient
+            .post()
+            .uri(uri)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(request)
+            .exchange()
+            .expectStatus()
+            .isEqualTo(HttpStatus.CONFLICT)
+    }
 }
