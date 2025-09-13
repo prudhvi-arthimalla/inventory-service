@@ -72,4 +72,14 @@ class InventoryService(val stockRepository: StockRepository) {
     }
 
     fun reserveStock(reserveStockRequest: ReserveStockRequest) {}
+
+    fun seedIfAbsent(sku: String, initial: Long = 0): Mono<Void> {
+        return stockRepository.findBySku(sku).hasElement().flatMap { exists ->
+            if (exists) Mono.empty()
+            else
+                stockRepository
+                    .save(StockDocument(sku = sku, onHand = initial, reserved = 0))
+                    .then()
+        }
+    }
 }
