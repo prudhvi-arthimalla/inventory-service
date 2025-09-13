@@ -10,6 +10,22 @@ spring:
   data:
     mongodb:
       auto-index-creation: true
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:29092}
+    properties:
+      schema.registry.url: ${SPRING_KAFKA_PROPERTIES_SCHEMA_REGISTRY_URL:http://schema-registry:8081}
+      specific.avro.reader: false
+    consumer:
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:inventory-service}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      auto-offset-reset: earliest
+    listener:
+      ack-mode: record
+
+kafka:
+  topics:
+    productRegistered: ${PRODUCT_REGISTERED_TOPIC:catalog.product.registered.v1}
 
 server:
   port: 8082

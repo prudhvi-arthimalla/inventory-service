@@ -39,8 +39,10 @@ class InventoryController(private val inventoryService: InventoryService) {
     @Operation(
         summary = "Add or update stock for a given SKU",
         description =
-            "Add or update stock either absolutely (UPSERT) or relatively (INCREMENT) " +
-                "Return 200 with Response body",
+            """
+            Add or update stock either absolutely (UPSERT) or relatively (INCREMENT).
+            Return 200 with Response body
+        """,
         responses =
             [
                 ApiResponse(
